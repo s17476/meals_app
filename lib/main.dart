@@ -4,6 +4,7 @@ import 'package:meals_app/models/category.dart';
 import 'package:meals_app/screens/categories_screen.dart';
 import 'package:meals_app/screens/category_meals_screen.dart';
 import 'package:meals_app/screens/meal_details_screen.dart';
+import 'package:meals_app/screens/tabs_screen.dart';
 
 void main() {
   runApp(const MealsApp());
@@ -42,7 +43,7 @@ class MealsApp extends StatelessWidget {
     return MaterialApp(
       title: 'DeliMeals',
       theme: _themeData,
-      home: const CategoriesScreen(),
+      home: const TabsScreen(),
       debugShowCheckedModeBanner: false,
       routes: {
         CategoryMealsScreen.routeName: (ctx) => const CategoryMealsScreen(),
