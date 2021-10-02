@@ -22,6 +22,7 @@ class CategoryMealsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle!),
+        titleTextStyle: Theme.of(context).textTheme.headline5,
       ),
       body: ListView.builder(
         itemBuilder: (ctx, index) {
