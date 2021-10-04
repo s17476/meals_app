@@ -3,12 +3,18 @@ import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/screens/meal_details_screen.dart';
 
 class MealItem extends StatelessWidget {
-  const MealItem({Key? key, required this.meal}) : super(key: key);
+  const MealItem({
+    Key? key,
+    required this.meal,
+  }) : super(key: key);
 
   final Meal meal;
 
   void selectMeal(BuildContext ctx) {
-    Navigator.of(ctx).pushNamed(MealDetailsScreen.routeName, arguments: meal);
+    Navigator.of(ctx).pushNamed(
+      MealDetailsScreen.routeName,
+      arguments: meal,
+    );
   }
 
   @override

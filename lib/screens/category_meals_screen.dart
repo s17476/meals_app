@@ -3,48 +3,65 @@ import 'package:meals_app/dummy_data.dart';
 import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/widgets/meal_item.dart';
 
-class CategoryMealsScreen extends StatelessWidget {
+class CategoryMealsScreen extends StatefulWidget {
   static const routeName = '/category-meals';
 
   const CategoryMealsScreen({
     Key? key,
+    required this.availableMeals,
   }) : super(key: key);
+
+  final List<Meal> availableMeals;
+
+  @override
+  State<CategoryMealsScreen> createState() => _CategoryMealsScreenState();
+}
+
+class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
+  String? categoryTitle = '';
+  List<Meal>? displayedMeals;
+  var _loadedInitData = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_loadedInitData) {
+      final routeArgs =
+          ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+      final categoryId = routeArgs['id'];
+      categoryTitle = routeArgs['title'];
+      displayedMeals = widget.availableMeals.where((meal) {
+        return meal.categories.contains(categoryId);
+      }).toList();
+    }
+    _loadedInitData = true;
+  }
+
+  void _removeMeal(Meal mealToRemove) {
+    setState(() {
+      displayedMeals!.removeWhere((element) => element.id == mealToRemove.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final routeArgs =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    final categoryId = routeArgs['id'];
-    final categoryTitle = routeArgs['title'];
-    final categoryMeals = DUMMY_MEALS.where((meal) {
-      return meal.categories.contains(categoryId);
-    }).toList();
+    var listView = ListView.builder(
+      itemBuilder: (ctx, index) {
+        Meal meal = displayedMeals![index];
+        return MealItem(meal: meal);
+      },
+      itemCount: displayedMeals!.length,
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle!),
         titleTextStyle: Theme.of(context).textTheme.headline5,
       ),
-      body: ListView.builder(
-        itemBuilder: (ctx, index) {
-          Meal meal = Meal(
-            id: categoryMeals[index].id,
-            categories: categoryMeals[index].categories,
-            title: categoryMeals[index].title,
-            imageUrl: categoryMeals[index].imageUrl,
-            ingredients: categoryMeals[index].ingredients,
-            steps: categoryMeals[index].steps,
-            duration: categoryMeals[index].duration,
-            complexity: categoryMeals[index].complexity,
-            affordability: categoryMeals[index].affordability,
-            isGlutenFree: categoryMeals[index].isGlutenFree,
-            isLactoseFree: categoryMeals[index].isLactoseFree,
-            isVegan: categoryMeals[index].isVegan,
-            isVegetarian: categoryMeals[index].isVegetarian,
-          );
-          return MealItem(meal: meal);
-        },
-        itemCount: categoryMeals.length,
-      ),
+      body: displayedMeals!.isEmpty
+          ? const Center(
+              child: Text('No items on the list!'),
+            )
+          : listView,
     );
   }
 }
